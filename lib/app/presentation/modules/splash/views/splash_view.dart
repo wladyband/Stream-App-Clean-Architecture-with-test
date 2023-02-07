@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:stream/app/data/repositories_implementation/connectivity_repository_impl.dart';
-import 'package:stream/app/domain/repositories/connectivity_repository.dart';
+import 'package:stream/app/presentation/routes/routes.dart';
+import 'package:stream/main.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({Key? key}) : super(key: key);
@@ -13,16 +13,37 @@ class _SplashViewState extends State<SplashView> {
   @override
   void initState() {
     super.initState();
-    _init();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) {
+        _init();
+      },
+    );
   }
 
   Future<void> _init() async {
-    ConnectivityRepository connectivityRepository =
-        ConnectivityRepositoryImpl();
+    final injector = Injector.of(context);
+    final connectivityRepository = injector.connectivityRepository;
     final hasInternet = await connectivityRepository.hasInternet;
     if (hasInternet) {
-      print("O valor da variável é $hasInternet");
+      final authenticationRepository = injector.authenticationRepository;
+      final isSignedIn = await authenticationRepository.isSignedIn;
+      if (isSignedIn) {
+        final user = await authenticationRepository.getUserData();
+        if (mounted) {
+          if (user != null) {
+            _goTo(Routes.home);
+          } else {
+            _goTo(Routes.signIn);
+          }
+        }
+      } else if (mounted) {
+        _goTo(Routes.signIn);
+      }
     } else {}
+  }
+
+  _goTo(String routeName) {
+    Navigator.pushReplacementNamed(context, routeName);
   }
 
   @override
