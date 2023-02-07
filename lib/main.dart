@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:stream/app/data/repositories_implementation/authentication_repository_impl.dart';
 import 'package:stream/app/data/repositories_implementation/connectivity_repository_impl.dart';
@@ -7,7 +8,7 @@ import 'package:stream/app/my_app.dart';
 
 void main() {
   runApp(Injector(
-      connectivityRepository: ConnectivityRepositoryImpl(),
+      connectivityRepository: ConnectivityRepositoryImpl(Connectivity()),
       authenticationRepository: AuthenticationRepositoryImpl(),
       child: const MyApp()));
 }
