@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stream/app/data/services/utils/validations.dart';
 
 class SignInViews extends StatefulWidget {
   const SignInViews({super.key});
@@ -7,7 +8,7 @@ class SignInViews extends StatefulWidget {
   State<SignInViews> createState() => _SignInViewsState();
 }
 
-class _SignInViewsState extends State<SignInViews> {
+class _SignInViewsState extends State<SignInViews> with Validations {
   String _username = '', _password = '';
 
   @override
@@ -26,13 +27,9 @@ class _SignInViewsState extends State<SignInViews> {
                   _username = text.trim().toLowerCase();
                 },
                 decoration: const InputDecoration(hintText: 'username'),
-                validator: (text) {
-                  text = text?.trim().toLowerCase();
-                  if (text!.isEmpty) {
-                    return 'Invalid username';
-                  }
-                  return null;
-                },
+                validator: (value) => combiner([
+                  () => isNotEmpty(value, 'Please inform user login'),
+                ]),
               ),
               const SizedBox(height: 20),
               TextFormField(
@@ -41,13 +38,10 @@ class _SignInViewsState extends State<SignInViews> {
                   _password = text.replaceAll(' ', '').toLowerCase();
                 },
                 decoration: const InputDecoration(hintText: 'password'),
-                validator: (text) {
-                  text = text?.replaceAll(' ', '').toLowerCase();
-                  if (text!.length < 4) {
-                    return 'Invalid password';
-                  }
-                  return null;
-                },
+                validator: (value) => combiner([
+                  () => isNotEmpty(value),
+                  () => validatorNumber(value, 4),
+                ]),
               ),
               const SizedBox(height: 20),
               Builder(builder: (context) {
