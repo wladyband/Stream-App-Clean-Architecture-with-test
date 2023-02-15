@@ -91,7 +91,7 @@ class _SignInViewsState extends State<SignInViews> with Validations {
     }
     result.when((failure) {
       setState(() {
-        _fetching = true;
+        _fetching = false;
       });
       final message = {
         SignFailure.notFound: 'Not found',
